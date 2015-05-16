@@ -1,7 +1,5 @@
 # fluent-plugin-redis-pfcount
 
-# fluent-plugin-redis-pfcount
-
 Fluentd output plugin to measure cardinality by HyperLogLog Distinct Value Estimator implemented by Redis.
 
 
@@ -51,7 +49,7 @@ More options
 
   ## emit record to next output plugin with new tag
   # "*" will be replaced by tag
-  emit_tag unique.accesslog
+  emit_tag pfcount.*
 
   ## set PFCOUNT result into record
   emit_pfcount pfcount
@@ -60,18 +58,18 @@ More options
   emit_changed changed
 
   ## do not emit records that did not alter HLL
-  drop_unchanged true
+  # drop_unchanged true
 
 </match>
 ```
-It will gather daily unique visitor for each http status code, then emit one's first request to next output plugin.
+
+It will estimate visitors per date per http status code.
 
 
 ## Limitation
 
-- `PFADD` and `PFCOUNT` are pipelined but are NOT executed atomically. `PFCOUNT` is NOT guranteed to be sequential.
+- `PFADD` and `PFCOUNT` are pipelined but are not executed atomically. `PFCOUNT` is NOT guranteed to be sequential.
 - Records may be duplicated when `emit` operation to next output plugin failed. Make sure the plugin is buffered or put UUID into record to deduplicate later.
-
 
 
 ## License
